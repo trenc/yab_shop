@@ -1,0 +1,50 @@
+h1. yab_shop
+
+Yab_shop is a simple shopping cart plugin with paypal support for the Textpattern CMS.
+
+*Version:* 0.8.1
+
+h2. Table of contents
+
+# "List of features":#help-section01
+# "Plugin requirements":#help-section02
+# "License":#help-section10
+# "Author contact":#help-section11
+
+h2(#help-section01). List of features
+
+* L10n for output
+* encrypted paypal checkout
+* google checkout
+* automatic output the currency symbols and number formatting, depending on your config (supported paypal iso 4217 currency codes, see paypal supported currencies and additional EEK, RSD, BRL, PHP, RON and ZAR)
+* tax rate support
+* tax rate exclusive or inclusive
+* support for promotional discounts by promo-key
+* selectable shipping costs and free shipping limit
+* multiple product properties up to three variants (e.g. size, color or whatever you want)
+* special prices for a property
+* affirmation mail to customer or not
+* should work with all url types
+* output is XHTML 1.0 strict
+* it’s a plugin (can easily be installed in addition to an already existing txp installation)
+* all the advantages of Textpattern CMS for the products (customizable, categories, all(?) plugins etc.)
+
+h2(#help-section02). Plugin requirements
+
+yab_email’s minimum requirements:
+
+* Textpattern 4.x
+
+h2(#help-section10). Licence
+
+This plugin is released under the GNU General Public License Version 2 and above
+
+* Version 2: "http://www.gnu.org/licenses/gpl-2.0.html":http://www.gnu.org/licenses/gpl-2.0.html
+* Version 3: "http://www.gnu.org/licenses/gpl-3.0.html":http://www.gnu.org/licenses/gpl-3.0.html
+
+h2(#help-section11). Author contact
+
+* "Plugin on author’s site":http://www.yablo.de/article/356/textpattern-shop-yab_shop
+* "Plugin on GitHub":https://github.com/trenc/yab_shop
+* "Plugin on textpattern forum":http://forum.textpattern.com/viewtopic.php?pid=173323
+* "Plugin on textpattern.org":http://textpattern.org/plugins/953/yab_shop
