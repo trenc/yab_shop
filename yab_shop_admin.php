@@ -17,7 +17,7 @@ $plugin['name'] = 'yab_shop_admin';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.8.1';
+$plugin['version'] = '0.8.2';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Shopping Cart Plugin (Admin UI & Prefs)';
@@ -274,7 +274,14 @@ function yab_shop_update()
 		$rs[] = "update ".safe_pfx('yab_shop_lang')." set val='Yab Shop public language and localisation' where name='lang_public' AND lang='en-gb'";
 		$rs[] = "update ".safe_pfx('yab_shop_lang')." set val='Yab Shop L10n' where name='shop_lang' AND lang='en-gb'";
 		$rs[] = "update ".safe_pfx('yab_shop_lang')." set val='Yab Shop common preferences' where name='shop_common_prefs' AND lang='en-gb'";
-		$rs[] = "update ".safe_pfx('yab_shop_prefs')." set val='0.8.1' where name='yab_shop_version'";
+		$rs[] = "update ".safe_pfx('yab_shop_prefs')." set val='$new' where name='yab_shop_version'";
+	}
+
+	// update from 0.8.1
+	if ($old == '0.8.1')
+	{
+		$rs[] = "update ".safe_pfx('yab_shop_prefs')." set val='0.8.2' where name='yab_shop_version'";
+	
 	}
 
 	foreach ($rs as $query)
@@ -297,7 +304,7 @@ function yab_shop_update()
 function yab_shop_table_exist($tbl)
 {
 	$tbl = PFX.$tbl;
-	$r = mysql_num_rows(safe_query("SHOW TABLES LIKE '".$tbl."'"));
+	$r = mysqli_num_rows(safe_query("SHOW TABLES LIKE '".$tbl."'"));
 	if ($r)
 	{
 		return true;
@@ -790,29 +797,29 @@ function yab_shop_uninstall()
  */
 function yab_shop_install($table)
 {
-	global $txpcfg, $plugins_ver;
+	global $txpcfg, $plugins_ver, $DB;
+
 	$yab_shop_version = $plugins_ver['yab_shop_admin'];
+	$version          = $DB->version;
+	$dbcharset        = $txpcfg['dbcharset'];
 
-	$version = mysql_get_server_info();
-	$dbcharset = $txpcfg['dbcharset'];
-
-	if (intval($version[0]) >= 5 || preg_match('#^4\.(0\.[2-9]|(1[89]))|(1\.[2-9])#',$version))
+	if (version_compare($version, '5') >= 0 || preg_match('#^4\.(0\.[2-9]|(1[89]))|(1\.[2-9])#', $version))
 	{
 		$tabletype = " ENGINE=MyISAM ";
 	}
 	else
 	{
-	$tabletype = " TYPE=MyISAM ";
+		$tabletype = " TYPE=MyISAM ";
 	}
 
-	if (isset($dbcharset) && (intval($version[0]) >= 5 || preg_match('#^4\.[1-9]#',$version)))
+	if (isset($dbcharset) && (version_compare($version, '5') >= 0 || preg_match('#^4\.[1-9]#', $version)))
 	{
 		$tabletype .= " CHARACTER SET = $dbcharset ";
 		if (isset($dbcollate))
 		{
 			$tabletype .= " COLLATE $dbcollate ";
 		}
-		mysql_query("SET NAMES ".$dbcharset);
+		mysqli_query($DB->link, "SET NAMES ".$dbcharset);
 	}
 
 	$create_sql = array();

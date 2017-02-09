@@ -17,7 +17,7 @@ $plugin['name'] = 'yab_shop_core';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.8.1';
+$plugin['version'] = '0.8.2';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Shopping Cart Plugin (Core)';
@@ -54,6 +54,22 @@ if (!defined('txpinterface'))
  * Version 2: http://www.gnu.org/licenses/gpl-2.0.html
  * Version 3: http://www.gnu.org/licenses/gpl-3.0.html
  */
+
+if (class_exists('\Textpattern\Tag\Registry'))
+{
+	Txp::get('\Textpattern\Tag\Registry')
+		->register('yab_shop_cart')
+		->register('yab_shop_cart_items')
+		->register('yab_shop_cart_subtotal')
+		->register('yab_shop_cart_quantity')
+		->register('yab_shop_cart_message')
+		->register('yab_shop_cart_link')
+		->register('yab_shop_checkout')
+		->register('yab_shop_add')
+		->register('yab_shop_price')
+		->register('yab_shop_show_config')
+		->register('yab_shop_custom_field');
+}
 
 function yab_shop_cart($atts, $thing = null)
 {
@@ -1078,8 +1094,8 @@ function yab_shop_build_paypal_encrypted_form($cart)
 	{
 		$i++;
 		$parameters['item_name_'.$i] = $item['name'];
-		$parameters['amount_'.$i]		= $item['price'];
-		$parameters['quantity_'.$i]	= $item['qty'];
+		$parameters['amount_'.$i]		 = number_format($item['price'], 2);
+		$parameters['quantity_'.$i]	 = $item['qty'];
 
 		if (!empty($item['property_1']))
 		{
@@ -1387,9 +1403,7 @@ function yab_shop_build_checkout_table($cart, $summary, $no_change = false)
 		).n;
 		$checkout_display .= tr(
 			tda(yab_shop_lang('shipping_costs'), ' colspan="2"').
-			tda(yab_shop_currency_out(yab_shop_config('currency'), 'cur').yab_shop_currency_out(yab_shop_config('currency'), 'toform', yab_shop_shipping_costs()), ' class="yab-checkout-sum"'),
-			' class="yab-checkout-shipping"'
-		).n;
+			tda(yab_shop_currency_out(yab_shop_config('currency'), 'cur').yab_shop_currency_out(yab_shop_config('currency'), 'toform', yab_shop_shipping_costs()), ' class="yab-checkout-sum"'), ' class="yab-checkout-shipping"').n;
 		$checkout_display .= tr(
 			tda(yab_shop_lang('grand_total'), ' colspan="2"').
 			tda(yab_shop_currency_out(yab_shop_config('currency'), 'cur').yab_shop_currency_out(yab_shop_config('currency'), 'toform', $cart->total + yab_shop_shipping_costs()), ' class="yab-checkout-sum"'),
@@ -1755,25 +1769,26 @@ function yab_shop_build_custom_select_tag($custom_field, $label_name)
 
 function yab_shop_shipping_costs()
 {
-	$cart =& $_SESSION['wfcart'];
-	$sub_total = $cart->total;
+	$cart           =& $_SESSION['wfcart'];
+	$sub_total      = $cart->total;
 	$shipping_costs = yab_shop_replace_commas(yab_shop_config('shipping_costs'));
-	$free_shipping = yab_shop_replace_commas(yab_shop_config('free_shipping'));
+	$free_shipping  = yab_shop_replace_commas(yab_shop_config('free_shipping'));
 
 	if (yab_shop_config('custom_field_shipping_name') != '')
 	{
-		$special_cost = 0.00;
+		$special_cost = 0;
 		foreach ($cart->get_contents() as $item)
 		{
-			$special_cost += yab_shop_replace_commas($item['spec_shipping']);
+			$special_cost += floatval(yab_shop_replace_commas($item['spec_shipping']));
 		}
 		$shipping_costs += $special_cost;
 	}
 
 	if ($sub_total >= $free_shipping)
 	{
-		$shipping_costs = 0.00;
+		$shipping_costs = 0;
 	}
+
 	return $shipping_costs;
 }
 
@@ -1821,6 +1836,8 @@ function yab_shop_replace_commas($input)
 
 function yab_shop_currency_out($currency, $what, $toform = '')
 {
+	$toform = floatval($toform);
+
 	switch ($currency)
 	{
 		case 'USD':
@@ -1921,7 +1938,7 @@ function yab_shop_currency_out($currency, $what, $toform = '')
 			break;
 		case 'RSD':
 			$out = array(
-				'cur'			 => 'RSD ',
+				'cur'			 => 'din ',
 				'toform'	=> number_format($toform, 2, ',', '.')
 			);
 			break;
