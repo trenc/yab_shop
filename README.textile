@@ -31,7 +31,7 @@ h2(#help-section01). List of features
 
 h2(#help-section02). Plugin requirements
 
-yab_email’s minimum requirements:
+Minimum requirements:
 
 * Textpattern 4.x
 
