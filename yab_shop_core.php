@@ -17,7 +17,7 @@ $plugin['name'] = 'yab_shop_core';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.8.2';
+$plugin['version'] = '0.8.3';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Shopping Cart Plugin (Core)';
@@ -69,6 +69,18 @@ if (class_exists('\Textpattern\Tag\Registry'))
 		->register('yab_shop_price')
 		->register('yab_shop_show_config')
 		->register('yab_shop_custom_field');
+}
+
+register_callback('yab_shop_modified', 'pretext_end');
+
+function yab_shop_modified()
+{
+	global $prefs, $pretext;
+
+	if (yab_shop_config('checkout_section_name') == $pretext['s'])
+	{
+		$prefs['send_lastmod'] = false;
+	}
 }
 
 function yab_shop_cart($atts, $thing = null)
