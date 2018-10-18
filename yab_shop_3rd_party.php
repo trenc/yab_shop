@@ -1,6 +1,6 @@
 <?php
 $plugin['name'] = 'yab_shop_3rd_party';
-$plugin['version'] = '0.7.0';
+$plugin['version'] = '0.7.1';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Shopping Cart Plugin (3rd party classes)';
@@ -251,7 +251,7 @@ if (!class_exists('wfCart'))
 		{
 			$this->itemcount = 0;
 			$this->total = 0;
-			if (sizeof($this->items > 0))
+			if (count($this->items) > 0)
 			{
 				foreach ($this->items as $item)
 				{
