@@ -2,7 +2,7 @@ h1. yab_shop
 
 Yab_shop is a simple shopping cart plugin with paypal support for the Textpattern CMS.
 
-*Version:* 0.8.2
+*Version:* 0.8.3
 
 h2. Table of contents
 
