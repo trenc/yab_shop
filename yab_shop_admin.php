@@ -17,7 +17,7 @@ $plugin['name'] = 'yab_shop_admin';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.8.2';
+$plugin['version'] = '0.8.5';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Shopping Cart Plugin (Admin UI & Prefs)';
@@ -278,9 +278,9 @@ function yab_shop_update()
 	}
 
 	// update from 0.8.1
-	if ($old == '0.8.1')
+	if (version_compare($old, '0.8.0', '>') and version_compare($old, $new, '<'))
 	{
-		$rs[] = "update ".safe_pfx('yab_shop_prefs')." set val='0.8.2' where name='yab_shop_version'";
+		$rs[] = "update ".safe_pfx('yab_shop_prefs')." set val='$new' where name='yab_shop_version'";
 	
 	}
 
@@ -464,7 +464,7 @@ function yab_shop_display_prefs($table = 'yab_shop_prefs')
 	}
 
 	$out .= n.'</tbody>'.n.endTable().
-		graf(fInput('submit', 'Submit', gTxt('save_button'), 'publish').$submit).
+		graf(fInput('submit', 'Submit', gTxt('save'), 'publish').$submit).
 		n.n.'</form></div>';
 
 	return $heading.$out;
@@ -829,8 +829,8 @@ function yab_shop_install($table)
 		case 'yab_shop_prefs':
 			$create_sql[] = "CREATE TABLE `".PFX."yab_shop_prefs` (
 				`prefs_id` int(11) NOT NULL,
-				`name` varchar(255) NOT NULL,
-				`val` varchar(255) NOT NULL default '',
+				`name` varchar(191) NOT NULL,
+				`val` varchar(191) NOT NULL default '',
 				`type` smallint(5) unsigned NOT NULL default '1',
 				`event` varchar(18) NOT NULL default 'shop_prefs',
 				`html` varchar(64) NOT NULL default 'text_input',
