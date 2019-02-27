@@ -1,6 +1,6 @@
 <?php
 
-// This is a PLUGIN TEMPLATE.
+// This is a PLUGIN TEMPLATE for Textpattern CMS.
 
 // Copy this file to a new name like abc_myplugin.php.  Edit the code, then
 // run this file at the command line to produce a plugin for distribution:
@@ -17,7 +17,7 @@ $plugin['name'] = 'yab_shop_core';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.8.3';
+$plugin['version'] = '0.8.5';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Shopping Cart Plugin (Core)';
@@ -31,10 +31,12 @@ $plugin['description'] = 'Shopping Cart Plugin (Core)';
 $plugin['order'] = '5';
 
 // Plugin 'type' defines where the plugin is loaded
-// 0 = public       : only on the public side of the website (default)
-// 1 = public+admin : on both the public and admin side
-// 2 = library      : only when include_plugin() or require_plugin() is called
-// 3 = admin        : only on the admin side
+// 0 = public              : only on the public side of the website (default)
+// 1 = public+admin        : on both the public and admin side
+// 2 = library             : only when include_plugin() or require_plugin() is called
+// 3 = admin               : only on the admin side (no AJAX)
+// 4 = admin+ajax          : only on the admin side (AJAX supported)
+// 5 = public+admin+ajax   : on both the public and admin side (AJAX supported)
 $plugin['type'] = '0';
 
 // Plugin "flags" signal the presence of optional capabilities to the core plugin loader.
@@ -44,6 +46,26 @@ if (!defined('PLUGIN_HAS_PREFS')) define('PLUGIN_HAS_PREFS', 0x0001); // This pl
 if (!defined('PLUGIN_LIFECYCLE_NOTIFY')) define('PLUGIN_LIFECYCLE_NOTIFY', 0x0002); // This plugin wants to receive "plugin_lifecycle.{$plugin['name']}" events
 
 $plugin['flags'] = '';
+
+// Plugin 'textpack' is optional. It provides i18n strings to be used in conjunction with gTxt().
+// Syntax:
+// ## arbitrary comment
+// #@event
+// #@language ISO-LANGUAGE-CODE
+// abc_string_name => Localized String
+
+/** Uncomment me, if you need a textpack
+$plugin['textpack'] = <<< EOT
+#@admin
+#@language en-gb
+abc_sample_string => Sample String
+abc_one_more => One more
+#@language de-de
+abc_sample_string => Beispieltext
+abc_one_more => Noch einer
+EOT;
+**/
+// End of textpack
 
 if (!defined('txpinterface'))
         @include_once('zem_tpl.php');
@@ -1465,7 +1487,7 @@ function yab_shop_build_mail_body($cart, $ps_order, $affirmation = '0')
 	$line_3 = '______________________________________________________________________';
 
 	$eol = "\r\n";
-	if (!is_windows())
+	if (!IS_WIN)
 	{
 		$eol = "\n";
 	}
@@ -1583,7 +1605,7 @@ function yab_shop_shop_mail($to, $subject, $body)
 	else
 	{
 		$eol = "\r\n";
-		if (!is_windows())
+		if (!IS_WIN)
 		{
 			$eol = "\n";
 		}
@@ -1634,7 +1656,7 @@ function yab_shop_mailheader($string, $type)
 	$end = '?=';
 	$sep = "\r\n";
 
-	if (!is_windows())
+	if (!IS_WIN)
 	{
 		$sep = "\n";
 	}
